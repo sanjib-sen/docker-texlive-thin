@@ -10,7 +10,7 @@
 # licenses chosen by their respective copyright holders.
 #
 FROM ubuntu:22.10
-MAINTAINER Thomas Weise <tweise@hfuu.edu.cn>
+LABEL MAINTAINER="Sanjib Kumar Sen <sksenonline@gmail.com>" 
 
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
@@ -20,7 +20,7 @@ RUN echo "Using chinese apt mirror, because otherwise I cannot build this image 
     echo "/etc/apt/sources.list  is now:" &&\
     cat /etc/apt/sources.list &&\
     echo "Performing initial clean-up and updates." &&\
-    apt-get -y update &&\
+    apt-get -y update &&\ 
     apt-get -y --fix-missing --no-install-recommends install &&\
     apt-get -y --with-new-pkgs --no-install-recommends upgrade &&\
 # prevent doc and man pages from being installed
@@ -54,42 +54,43 @@ RUN echo "Using chinese apt mirror, because otherwise I cannot build this image 
 # install some utilitites
     echo "Installing more fonts and utilities." &&\
     apt-get install -f -y --no-install-recommends \
-          curl \
-          fonts-dejavu \
-          fonts-dejavu-core \
-          fonts-dejavu-extra \
-          fonts-noto-cjk \
-          fontconfig \
-          xz-utils &&\
+        #   curl \
+        #   fonts-dejavu \
+        #   fonts-dejavu-core \
+        #   fonts-dejavu-extra \
+        #   fonts-noto-cjk \
+        #   fontconfig \
+        #   xz-utils \
+          git &&\
 # install the microsoft core fonts
-    echo "Installing Microsoft core fonts." &&\
-    echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections &&\
-    echo "ttf-mscorefonts-installer msttcorefonts/present-mscorefonts-eula note" | debconf-set-selections &&\
-    curl --output "/tmp/ttf-mscorefonts-installer.deb" "http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.7_all.deb" &&\
-    apt install -f -y --no-install-recommends "/tmp/ttf-mscorefonts-installer.deb" &&\
-    rm -f "/tmp/ttf-mscorefonts-installer.deb" &&\
+    # echo "Installing Microsoft core fonts." &&\
+    # echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections &&\
+    # echo "ttf-mscorefonts-installer msttcorefonts/present-mscorefonts-eula note" | debconf-set-selections &&\
+    # curl --output "/tmp/ttf-mscorefonts-installer.deb" "http://ftp.de.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.7_all.deb" &&\
+    # apt install -f -y --no-install-recommends "/tmp/ttf-mscorefonts-installer.deb" &&\
+    # rm -f "/tmp/ttf-mscorefonts-installer.deb" &&\
 # we make sure to contain the EULA in our container
-    echo "Adding Microsoft EULA to image." &&\
-    curl --output "/root/mscorefonts-eula" "http://corefonts.sourceforge.net/eula.htm" &&\
+    # echo "Adding Microsoft EULA to image." &&\
+    # curl --output "/root/mscorefonts-eula" "http://corefonts.sourceforge.net/eula.htm" &&\
 # install TeX Live and ghostscript as well as other tools
     echo "Installing TeX Live and ghostscript and other tools." &&\
     apt-get install -f -y --no-install-recommends \
-          cm-super \
-          dvipng \
-          ghostscript \
-          make \
-          latex-cjk-chinese \
+        #   cm-super \
+        #   dvipng \
+        #   ghostscript \
+        #   make \
+        #   latex-cjk-chinese \
           latexmk \
-          lmodern \
-          poppler-utils \
-          psutils \
-          t1utils \
-          tex-gyre \
+        #   lmodern \
+        #   poppler-utils \
+        #   psutils \
+        #   t1utils \
+        #   tex-gyre \
           texlive-base \
           texlive-binaries \
           texlive-font-utils \
           texlive-fonts-recommended \
-          texlive-lang-chinese \
+        #   texlive-lang-chinese \
           texlive-latex-base \
           texlive-latex-recommended \
           texlive-luatex \
@@ -107,13 +108,13 @@ RUN echo "Using chinese apt mirror, because otherwise I cannot build this image 
 #   tlmgr option repository ftp://tug.org/historic/systems/texlive/2021/tlnet-final &&\
 ### end of older repository
 # updating via tlmgr
-    echo "Updating TeXLive via tlmgr." &&\
-    tlmgr --verify-repo=none update --self &&\
-    tlmgr --verify-repo=none update --all &&\
-    echo "Invoking updmap-sys." &&\
+    # echo "Updating TeXLive via tlmgr." &&\
+    # tlmgr --verify-repo=none update --self &&\
+    # tlmgr --verify-repo=none update --all &&\
+    # echo "Invoking updmap-sys." &&\
 # calling updmap-sys
-    updmap-sys &&\
-    echo "initial updmap-sys done successfully" &&\
+    # updmap-sys &&\
+    # echo "initial updmap-sys done successfully" &&\
 # tlmgr will call updmap-sys unsuccessfully for
 # reasons I do not understand, so while it seemingly
 # succeeds, it will still fail
@@ -138,10 +139,10 @@ RUN echo "Using chinese apt mirror, because otherwise I cannot build this image 
                                       ucharcat \
                                       unicode-math || true) &&\
     echo "tlmgr install completed, moving fonts" &&\
-    cat /root/texmf/web2c/updmap.cfg >> /usr/share/texmf/web2c/updmap.cfg &&\
+    # cat /root/texmf/web2c/updmap.cfg >> /usr/share/texmf/web2c/updmap.cfg &&\
     (rm -rf /root/texmf/tlpkg || true) &&\
     (rm -rf /root/texmf/web2c || true) &&\
-    cp -n -r /root/texmf/* /usr/share/texlive/texmf-dist/ &&\
+    # cp -n -r /root/texmf/* /usr/share/texlive/texmf-dist/ &&\
     (rm -rf /root/texmf || true) &&\
     (rm -rf /root/texmf-var || true) &&\
     echo "installed packages merged and /root/texmf deleted" &&\
@@ -193,33 +194,33 @@ RUN echo "Using chinese apt mirror, because otherwise I cannot build this image 
 # Since I am not sure about the proper order,
 # we just do this twice.
 # iteration 1
-    echo "Updating LaTeX and font system files, iteration 1." &&\
-    fc-cache -fv &&\
-    echo "fc-cache succeeded." &&\
-    texhash --verbose &&\
-    echo "texhash completed successfully." &&\
-    updmap-sys &&\
-    echo "updmap-sys completed successfully." &&\
-    mktexlsr --verbose &&\
-    echo "mktexlsr succeeded." &&\
-    fmtutil-sys --quiet --missing &&\
-    echo "fmtutil-sys --missing completed successfully." &&\
-    fmtutil-sys --quiet --all > /dev/null &&\
-    echo "fmtutil-sys --all completed successfully." &&\
+    # echo "Updating LaTeX and font system files, iteration 1." &&\
+    # fc-cache -fv &&\
+    # echo "fc-cache succeeded." &&\
+    # texhash --verbose &&\
+    # echo "texhash completed successfully." &&\
+    # updmap-sys &&\
+    # echo "updmap-sys completed successfully." &&\
+    # mktexlsr --verbose &&\
+    # echo "mktexlsr succeeded." &&\
+    # fmtutil-sys --quiet --missing &&\
+    # echo "fmtutil-sys --missing completed successfully." &&\
+    # fmtutil-sys --quiet --all > /dev/null &&\
+    # echo "fmtutil-sys --all completed successfully." &&\
 # iteration 2
-    echo "Updating LaTeX and font system files, iteration 2." &&\
-    fc-cache -fv &&\
-    echo "fc-cache succeeded." &&\
-    texhash --verbose &&\
-    echo "texhash completed successfully." &&\
-    updmap-sys &&\
-    echo "updmap-sys completed successfully." &&\
-    mktexlsr --verbose &&\
-    echo "mktexlsr succeeded." &&\
-    fmtutil-sys --quiet --missing &&\
-    echo "fmtutil-sys --missing completed successfully." &&\
-    fmtutil-sys --quiet --all > /dev/null &&\
-    echo "fmtutil-sys --all completed successfully." &&\
+    # echo "Updating LaTeX and font system files, iteration 2." &&\
+    # fc-cache -fv &&\
+    # echo "fc-cache succeeded." &&\
+    # texhash --verbose &&\
+    # echo "texhash completed successfully." &&\
+    # updmap-sys &&\
+    # echo "updmap-sys completed successfully." &&\
+    # mktexlsr --verbose &&\
+    # echo "mktexlsr succeeded." &&\
+    # fmtutil-sys --quiet --missing &&\
+    # echo "fmtutil-sys --missing completed successfully." &&\
+    # fmtutil-sys --quiet --all > /dev/null &&\
+    # echo "fmtutil-sys --all completed successfully." &&\
 # Hopefully, the installation and merging of latex packages
 # into the system-wide latex installation has worked...
 # delete texlive sources and other potentially useless stuff
@@ -264,44 +265,44 @@ RUN echo "Using chinese apt mirror, because otherwise I cannot build this image 
     mkdir -p /usr/share/texmf/source &&\
     mkdir -p /usr/share/texlive/texmf-dist/source &&\
 # run a test: are the LaTeX packages really installed?
-    echo "Testing whether the LaTeX packages have been installed correctly." &&\
-    cd "/tmp/" &&\
-    echo '\\documentclass{article}%' > test.tex &&\
-    echo '\\usepackage{awesomebox}%' >> test.tex &&\
-    echo '\\usepackage{background}%' >> test.tex &&\
-    echo '\\usepackage{filehook}%' >> test.tex &&\
-    echo '\\usepackage{fontawesome5}%' >> test.tex &&\
-    echo '\\usepackage{footmisc}%' >> test.tex &&\
-    echo '\\usepackage{footnotebackref}%' >> test.tex &&\
-    echo '\\usepackage{fvextra}%' >> test.tex &&\
-    echo '\\usepackage[LY1]{fontenc}%' >> test.tex &&\
-    echo '\\usepackage{mdframed}%' >> test.tex &&\
-    echo '\\usepackage{mweights}%' >> test.tex &&\
-    echo '\\usepackage{needspace}%' >> test.tex &&\
-    echo '\\usepackage{pagecolor}%' >> test.tex &&\
-    echo '\\usepackage{siunitx}%' >> test.tex &&\
-    echo '\\usepackage{sourcecodepro}%' >> test.tex &&\
-    echo '\\usepackage{sourcesanspro}%' >> test.tex &&\
-    echo '\\begin{document}%' >> test.tex &&\
-    echo 'This is a test!' >> test.tex &&\
-    echo '\\end{document}%' >> test.tex &&\
-    echo "Now testing LaTeX." &&\
-    latex -halt-on-error -interaction=nonstopmode -no-shell-escape test.tex &&\
-    mv test.tex a &&\
-    rm -f test.* &&\
-    mv a test.tex &&\
-    echo "Now testing PdfLaTeX." &&\
-    pdflatex -halt-on-error -interaction=nonstopmode -no-shell-escape test.tex &&\
-    rm -rf /tmp/* /var/tmp/* &&\
-    echo '\\documentclass{article}%' > test.tex &&\
-    echo '\\usepackage{xeCJK}%' >> test.tex &&\
-    echo '\\usepackage{ucharcat}%' >> test.tex &&\
-    echo '\\usepackage{unicode-math}%' >> test.tex &&\
-    echo '\\begin{document}%' >> test.tex &&\
-    echo 'This is a test!' >> test.tex &&\
-    echo '\\end{document}%' >> test.tex &&\
-    echo "Now testing XeLaTeX." &&\
-    xelatex -halt-on-error -interaction=nonstopmode -no-shell-escape test.tex &&\
+    # echo "Testing whether the LaTeX packages have been installed correctly." &&\
+    # cd "/tmp/" &&\
+    # echo '\\documentclass{article}%' > test.tex &&\
+    # echo '\\usepackage{awesomebox}%' >> test.tex &&\
+    # echo '\\usepackage{background}%' >> test.tex &&\
+    # echo '\\usepackage{filehook}%' >> test.tex &&\
+    # echo '\\usepackage{fontawesome5}%' >> test.tex &&\
+    # echo '\\usepackage{footmisc}%' >> test.tex &&\
+    # echo '\\usepackage{footnotebackref}%' >> test.tex &&\
+    # echo '\\usepackage{fvextra}%' >> test.tex &&\
+    # echo '\\usepackage[LY1]{fontenc}%' >> test.tex &&\
+    # echo '\\usepackage{mdframed}%' >> test.tex &&\
+    # echo '\\usepackage{mweights}%' >> test.tex &&\
+    # echo '\\usepackage{needspace}%' >> test.tex &&\
+    # echo '\\usepackage{pagecolor}%' >> test.tex &&\
+    # echo '\\usepackage{siunitx}%' >> test.tex &&\
+    # echo '\\usepackage{sourcecodepro}%' >> test.tex &&\
+    # echo '\\usepackage{sourcesanspro}%' >> test.tex &&\
+    # echo '\\begin{document}%' >> test.tex &&\
+    # echo 'This is a test!' >> test.tex &&\
+    # echo '\\end{document}%' >> test.tex &&\
+    # echo "Now testing LaTeX." &&\
+    # latex -halt-on-error -interaction=nonstopmode -no-shell-escape test.tex &&\
+    # mv test.tex a &&\
+    # rm -f test.* &&\
+    # mv a test.tex &&\
+    # echo "Now testing PdfLaTeX." &&\
+    # pdflatex -halt-on-error -interaction=nonstopmode -no-shell-escape test.tex &&\
+    # rm -rf /tmp/* /var/tmp/* &&\
+    # echo '\\documentclass{article}%' > test.tex &&\
+    # echo '\\usepackage{xeCJK}%' >> test.tex &&\
+    # echo '\\usepackage{ucharcat}%' >> test.tex &&\
+    # echo '\\usepackage{unicode-math}%' >> test.tex &&\
+    # echo '\\begin{document}%' >> test.tex &&\
+    # echo 'This is a test!' >> test.tex &&\
+    # echo '\\end{document}%' >> test.tex &&\
+    # echo "Now testing XeLaTeX." &&\
+    # xelatex -halt-on-error -interaction=nonstopmode -no-shell-escape test.tex &&\
 # final cleanup
     echo "Performing final clean-up." &&\
     rm -rf /tmp/* /var/tmp/* &&\
